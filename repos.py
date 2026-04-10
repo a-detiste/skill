@@ -112,4 +112,13 @@ def deploy():
     render = SingleTable(data, 'Sorting Hat')
     print(render.table)
 
+    for package in sorted(packages.packages.values()):
+        for binary in sorted(package.binaries):
+            if binary.buster:
+                 subprocess.call(['aptly', 'repo', 'add', 'buster', binary.filename])
+            if binary.trixie:
+                 subprocess.call(['aptly', 'repo', 'add', 'trixie', binary.filename])
+
+# aptly repo create -architectures="i386" buster
+# aptly repo create -architectures="amd64 i386" trixie
 deploy()
