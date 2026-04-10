@@ -1,0 +1,12 @@
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+
+Package: hsupa-handler
+Depends:
+ python3-paho-mqtt,
+ base-files (<< 12),
+Description: manage NetModule NB3700 router
+ long description and info
+ .
+ second paragraph

@@ -1,0 +1,12 @@
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+
+Package: kontron-4g
+Depends:
+ python3-paho-mqtt,
+ base-files (>> 12),
+Description: manage new 4G/5G modem
+ long description and info
+ .
+ second paragraph

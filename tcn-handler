@@ -1,0 +1,7 @@
+Source: tcn-handler
+Standards-Version: 3.9.2
+
+Package: tch-handler
+Architecture: i386
+Description: we have tcnopen at home
+ we love shared memory

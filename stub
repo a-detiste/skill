@@ -1,0 +1,9 @@
+Source: stub
+Standards-Version: 3.9.2
+
+Package: stub
+Architecture: i386
+Description: an i386 library
+ long description and info
+ .
+ second paragraph

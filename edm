@@ -1,0 +1,11 @@
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+
+Package: edm
+Depends: python3-paho-mqtt
+Architecture: all
+Description: Embedded Data Model
+ long description and info
+ .
+ second paragraph

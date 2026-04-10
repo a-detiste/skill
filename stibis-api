@@ -1,0 +1,9 @@
+Source: stibis-api
+Standards-Version: 3.9.2
+
+Package: stibis-api
+Architecture: i386
+Description: a VÖV broker
+ long description and info
+ .
+ second paragraph
