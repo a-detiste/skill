@@ -28,13 +28,6 @@ def relevant(depends: str) -> tuple[bool, bool]:
     return (for_buster, for_trixie)
 
 
-def tick(flag: bool) -> str:
-    if flag:
-        return Color('{autogreen}✓{/autogreen}')
-    else:
-        return Color('{autored}✗{/autored}')
-
-
 class Binary:
     '''some binary artefact'''
     filename: str
@@ -71,19 +64,36 @@ def get_packages() -> dict[str, set[str]]:
         packages[name].add(binary)
     return packages
 
-table_data = [['package', 'arch', 'buster', 'trixie']]
 
-for package in get_packages().values():
-    if len(package.binaries) == 2:
-        table_data.append([package.name, 'i386', tick(True), tick(False)])
-        table_data.append([package.name, 'amd64', tick(False), tick(True)])
+def deploy():
+    data = list()
+    for package in get_packages().values():
+        if len(package.binaries) == 2:
+            data.append([package.name, 'i386', True, False])
+            data.append([package.name, 'amd64', False, True])
+        else:
+            binary = package.binaries.pop()
+            depends = subprocess.check_output(['dpkg-deb', '--field', binary.filename, 'Depends'],
+                                              text=True).strip('\n ')
+
+            buster, trixie = relevant(depends)
+
+            data.append([package.name, binary.arch, buster, trixie])
+    return data
+
+
+def tick(flag: bool) -> str:
+    if flag:
+        return Color('{autogreen}✓{/autogreen}')
     else:
-        binary = package.binaries.pop()
-        depends = subprocess.check_output(['dpkg-deb', '--field', binary.filename, 'Depends'],
-                                           text=True).strip('\n ')
+        return Color('{autored}✗{/autored}')
 
-        buster, trixie = relevant(depends)
-        table_data.append([package.name, binary.arch, tick(buster), tick(trixie)])
 
-render = SingleTable(table_data, 'Sorting Hat')
-print(render.table)
+def table():
+    table_data = [['package', 'arch', 'buster', 'trixie']]
+    for r in deploy():
+        table_data.append([r[0], r[1], tick(r[2]), tick(r[3])])
+    render = SingleTable(table_data, 'Sorting Hat')
+    print(render.table)
+
+table()
