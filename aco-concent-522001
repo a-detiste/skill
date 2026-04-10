@@ -1,5 +1,6 @@
 Section: misc
 Priority: optional
+Section: non-free/misc
 Standards-Version: 3.9.2
 
 Package: aco-concent-522001
