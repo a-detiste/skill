@@ -61,8 +61,8 @@ class Package:
     def __gt__(self, other) -> bool:
         return self.name > other.name
 
-    def add(self, binary: Binary) -> None:
-        self.binaries.add(binary)
+    def add_binary(self, deb: str) -> None:
+        self.binaries.add(Binary(deb))
 
     def deploy(self) -> None:
         '''run deployment'''
@@ -86,12 +86,10 @@ class Packages:
     def scan(self) -> None:
         '''scan all the *deb files, get one or two .deb per package'''
         for p in glob.glob('*.deb'):
-            basename = os.path.basename(p)
-            name = basename.split('_')[0]
+            name = os.path.basename(p).split('_')[0]
             if name not in self.packages:
                 self.packages[name] = Package(name)
-            binary = Binary(p)
-            self.packages[name].add(binary)
+            self.packages[name].add_binary(p)
 
     def deploy(self) -> None:
         for package in self.packages.values():
