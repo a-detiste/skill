@@ -86,30 +86,22 @@ class Packages:
         for package in self.packages.values():
             package.deploy()
 
-
-def deploy():
-    packages = Packages()
-    packages.scan()
-    packages.deploy()
-    data = list()
-    for package in packages.packages.values():
-        for binary in package.binaries:
-            data.append([package.name, binary.arch, binary.buster, binary.trixie])
-    return data
-
-
 def tick(flag: bool) -> str:
     if flag:
         return Color('{autogreen}✓{/autogreen}')
     else:
         return Color('{autored}✗{/autored}')
 
-
-def table():
-    table_data = [['package', 'arch', 'buster', 'trixie']]
-    for r in deploy():
-        table_data.append([r[0], r[1], tick(r[2]), tick(r[3])])
-    render = SingleTable(table_data, 'Sorting Hat')
+def deploy():
+    '''cute deployement'''
+    packages = Packages()
+    packages.scan()
+    packages.deploy()
+    data = [['package', 'arch', 'buster', 'trixie']]
+    for package in packages.packages.values():
+        for binary in package.binaries:
+            data.append([package.name, binary.arch, tick(binary.buster), tick(binary.trixie)])
+    render = SingleTable(data, 'Sorting Hat')
     print(render.table)
 
-table()
+deploy()
