@@ -85,11 +85,11 @@ class Packages:
 
     def scan(self) -> None:
         '''scan all the *deb files, get one or two .deb per package'''
-        for p in glob.glob('*.deb'):
-            name = os.path.basename(p).split('_')[0]
+        for deb in glob.glob('*.deb'):
+            name = os.path.basename(deb).split('_')[0]
             if name not in self.packages:
                 self.packages[name] = Package(name)
-            self.packages[name].add_binary(p)
+            self.packages[name].add_binary(deb)
 
     def deploy(self) -> None:
         for package in self.packages.values():
