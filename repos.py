@@ -8,6 +8,9 @@ from colorclass import Color
 from debian.deb822 import PkgRelation
 from terminaltables3 import SingleTable
 
+OK = Color('{autogreen}✓{/autogreen}')
+KO = Color('{autored}✗{/autored}')
+
 
 class Binary:
     '''some binary artefact'''
@@ -95,10 +98,7 @@ class Packages:
             package.deploy()
 
 def tick(flag: bool) -> str:
-    if flag:
-        return Color('{autogreen}✓{/autogreen}')
-    else:
-        return Color('{autored}✗{/autored}')
+    return OK if flag else KO
 
 def deploy():
     '''cute deployement'''
