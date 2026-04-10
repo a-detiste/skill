@@ -5,6 +5,8 @@ Standards-Version: 3.9.2
 
 Package: aco-concent-522001
 Architecture: any
+Depends:
+ libc6,
 Description: more gSOAP sickness
  long description and info
  .

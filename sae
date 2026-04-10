@@ -4,7 +4,9 @@ Priority: optional
 Standards-Version: 3.9.2
 
 Package: sae
-Depends: stub
+Depends:
+ libc6,
+ stub,
 Architecture: i386
 Description: SAE
  long description and info

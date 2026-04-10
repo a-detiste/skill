@@ -4,6 +4,9 @@ Standards-Version: 3.9.2
 
 Package: camera
 Architecture: all
+Depends:
+ python3-paho-mqtt,
+ python3-zombie-telnetlib,
 Description: CCTV
  long description and info
  .
