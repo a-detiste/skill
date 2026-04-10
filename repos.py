@@ -30,6 +30,7 @@ class Binary:
 
         if not depends:
             return
+
         parser = PkgRelation()
         for rel in parser.parse_relations(depends):
             for rel_item in rel:
@@ -39,6 +40,7 @@ class Binary:
                         self.buster = False
                     else:
                         self.trixie = False
+                    return
 
 
 class Package:
