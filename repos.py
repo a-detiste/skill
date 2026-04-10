@@ -20,6 +20,9 @@ class Binary:
         self.filename = filename
         self.arch = filename.split('_')[2].split('.')[0]
 
+    def __gt__(self, other) -> bool:
+        return self.arch > other.arch
+
     def deploy(self) -> None:
         '''is this package relevant for Buster ? for Trixie ?'''
         self.buster = True
@@ -52,6 +55,9 @@ class Package:
         self.name = name
         self.binaries = set()
 
+    def __gt__(self, other) -> bool:
+        return self.name > other.name
+
     def add(self, binary: Binary) -> None:
         self.binaries.add(binary)
 
@@ -76,7 +82,7 @@ class Packages:
 
     def scan(self) -> None:
         '''scan all the *deb files, get one or two .deb per package'''
-        for p in sorted(glob.glob('*.deb')):
+        for p in glob.glob('*.deb'):
             basename = os.path.basename(p)
             name = basename.split('_')[0]
             if name not in self.packages:
@@ -100,8 +106,8 @@ def deploy():
     packages.scan()
     packages.deploy()
     data = [['package', 'arch', 'buster', 'trixie']]
-    for package in packages.packages.values():
-        for binary in package.binaries:
+    for package in sorted(packages.packages.values()):
+        for binary in sorted(package.binaries):
             data.append([package.name, binary.arch, tick(binary.buster), tick(binary.trixie)])
     render = SingleTable(data, 'Sorting Hat')
     print(render.table)
