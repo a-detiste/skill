@@ -32,6 +32,8 @@ class Binary:
     '''some binary artefact'''
     filename: str
     arch: str
+    buster: bool = False
+    trixie: bool = False
 
     def __init__(self, filename: str) -> None:
         self.filename = filename
@@ -50,35 +52,49 @@ class Package:
     def add(self, binary: Binary) -> None:
         self.binaries.add(binary)
 
-def get_packages() -> dict[str, set[str]]:
-    '''get one or two .deb per package'''
-    packages: dict[str, Package] = dict()
-
-    for p in sorted(glob.glob('*.deb')):
-        basename = os.path.basename(p)
-        parts = basename.split('_')
-        name = parts[0]
-        if name not in packages:
-            packages[name] = Package(name)
-        binary = Binary(p)
-        packages[name].add(binary)
-    return packages
-
-
-def deploy():
-    data = list()
-    for package in get_packages().values():
-        if len(package.binaries) == 2:
-            data.append([package.name, 'i386', True, False])
-            data.append([package.name, 'amd64', False, True])
+    def deploy(self) -> None:
+        '''run deployment'''
+        assert self.binaries
+        if len(self.binaries) == 2:
+            for binary in self.binaries:
+                if binary.arch == 'amd64':
+                    binary.trixie = True
+                else:
+                    binary.buster = True
         else:
-            binary = package.binaries.pop()
+            binary = list(self.binaries)[0]
             depends = subprocess.check_output(['dpkg-deb', '--field', binary.filename, 'Depends'],
                                               text=True).strip('\n ')
 
-            buster, trixie = relevant(depends)
+            binary.buster, binary.trixie = relevant(depends)
 
-            data.append([package.name, binary.arch, buster, trixie])
+class Packages:
+    '''all the packages'''
+    packages: dict[str, Package] = dict()
+
+    def scan(self) -> None:
+        '''scan all the *deb files, get one or two .deb per package'''
+        for p in sorted(glob.glob('*.deb')):
+            basename = os.path.basename(p)
+            name = basename.split('_')[0]
+            if name not in self.packages:
+                self.packages[name] = Package(name)
+            binary = Binary(p)
+            self.packages[name].add(binary)
+
+    def deploy(self) -> None:
+        for package in self.packages.values():
+            package.deploy()
+
+
+def deploy():
+    packages = Packages()
+    packages.scan()
+    packages.deploy()
+    data = list()
+    for package in packages.packages.values():
+        for binary in package.binaries:
+            data.append([package.name, binary.arch, binary.buster, binary.trixie])
     return data
 
 
