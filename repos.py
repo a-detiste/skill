@@ -20,7 +20,6 @@ def relevant(depends: str) -> tuple[bool, bool]:
             for rel_item in rel:
                 if rel_item['name'] == 'base-files':
                     operator, version = rel_item['version']
-                    # sorting hat
                     if operator == '>>':
                         for_buster = False
                     else:
@@ -36,6 +35,7 @@ def tick(flag: bool) -> str:
         return Color('{autored}✗{/autored}')
 
 def get_packages() -> dict[str, set[str]]:
+    '''get one or two .deb per package'''
     packages: dict[str, set[str]] = dict()
 
     for p in sorted(glob.glob('*.deb')):
