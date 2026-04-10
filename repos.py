@@ -56,10 +56,8 @@ for package, archs in get_packages().items():
         table_data.append([package, 'amd64', tick(False), tick(True)])
     else:
         arch = archs.pop()
-        depends = subprocess.check_output(['dpkg-deb',
-                                           '--field',
-                                           glob.glob('%s*%s.deb' % (package, arch))[0],
-                                           'Depends'],
+        filename = glob.glob('%s*%s.deb' % (package, arch))[0]
+        depends = subprocess.check_output(['dpkg-deb', '--field', filename, 'Depends'],
                                            text=True).strip('\n ')
 
         buster, trixie = relevant(depends)
