@@ -8,8 +8,8 @@ from colorclass import Color
 from debian.deb822 import PkgRelation
 from terminaltables3 import SingleTable
 
-OK = Color('{autogreen}✓{/autogreen}')
-KO = Color('{autored}✗{/autored}')
+OK = Color('{autogreen}✓{/autogreen}') # type: ignore
+KO = Color('{autored}✗{/autored}') # type: ignore
 
 
 class Binary:
@@ -23,7 +23,7 @@ class Binary:
         self.filename = filename
         self.arch = filename.split('_')[2].split('.')[0]
 
-    def __gt__(self, other) -> bool:
+    def __gt__(self, other: 'Binary') -> bool:
         return self.arch > other.arch
 
     def deploy(self) -> None:
@@ -41,6 +41,7 @@ class Binary:
         for rel in parser.parse_relations(depends):
             for rel_item in rel:
                 if rel_item['name'] == 'base-files':
+                    assert rel_item['version']
                     operator, version = rel_item['version']
                     if operator == '>>':
                         self.buster = False
@@ -52,13 +53,13 @@ class Binary:
 class Package:
     '''one package might have 1 or more binaries'''
     name: str
-    binaries = set()
+    binaries: set[Binary] = set()
 
     def __init__(self, name: str) -> None:
         self.name = name
         self.binaries = set()
 
-    def __gt__(self, other) -> bool:
+    def __gt__(self, other: 'Package') -> bool:
         return self.name > other.name
 
     def add_binary(self, deb: str) -> None:
@@ -67,7 +68,7 @@ class Package:
     def deploy(self) -> None:
         '''run deployment'''
         assert len(self.binaries) in (1, 2)
-        if 'all' in self.binaries:
+        if 'all' in [b.arch for b in self.binaries]:
             assert len(self.binaries) == 1
 
         for binary in self.binaries:
@@ -98,7 +99,7 @@ class Packages:
 def tick(flag: bool) -> str:
     return OK if flag else KO
 
-def deploy():
+def deploy() -> None:
     '''cute deployement'''
     packages = Packages()
     packages.scan()
