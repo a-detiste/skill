@@ -119,6 +119,8 @@ def deploy() -> None:
             if binary.trixie:
                  subprocess.call(['aptly', 'repo', 'add', 'trixie', binary.filename])
 
-# aptly repo create -architectures="i386" buster
-# aptly repo create -architectures="amd64 i386" trixie
-deploy()
+
+if __name__ == "__main__":
+    # aptly repo create -architectures="i386" buster
+    # aptly repo create -architectures="amd64 i386" trixie
+    deploy()
