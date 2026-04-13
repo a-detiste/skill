@@ -4,12 +4,7 @@ import glob
 import os
 import subprocess
 
-from colorclass import Color
 from debian.deb822 import PkgRelation
-from terminaltables3 import SingleTable
-
-OK = Color('{autogreen}✓{/autogreen}') # type: ignore
-KO = Color('{autored}✗{/autored}') # type: ignore
 
 
 class Binary:
@@ -96,11 +91,17 @@ class Packages:
         for package in self.packages.values():
             package.deploy()
 
-def tick(flag: bool) -> str:
-    return OK if flag else KO
-
 def deploy() -> None:
     '''cute deployement'''
+    from colorclass import Color
+    from terminaltables3 import SingleTable
+
+    OK = Color('{autogreen}✓{/autogreen}') # type: ignore
+    KO = Color('{autored}✗{/autored}') # type: ignore
+
+    def tick(flag: bool) -> str:
+        return OK if flag else KO
+
     packages = Packages()
     packages.scan()
     packages.deploy()
