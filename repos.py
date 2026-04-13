@@ -91,6 +91,7 @@ class Packages:
         for package in self.packages.values():
             package.deploy()
 
+
 def deploy() -> None:
     '''cute deployement'''
     from colorclass import Color
